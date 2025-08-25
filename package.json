@@ -1,0 +1,17 @@
+{
+  "name": "src",
+  "scripts": {
+    "dev": "concurrently \"bun run dev:client\" \"bun run dev:server\"",
+    "dev:server": "bun run --hot src/index.ts",
+    "dev:client": "bun run --cwd=client dev"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.0",
+    "hono": "^4.9.4"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "concurrently": "^9.2.1",
+    "typescript": "^5.9.2"
+  }
+}
