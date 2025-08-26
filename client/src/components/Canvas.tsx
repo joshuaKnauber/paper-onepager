@@ -120,10 +120,10 @@ export function Canvas(props: {
         )}
       >
         {strokes.map((pathData, index) => (
-          <path key={index} d={pathData} fill="darkred" />
+          <path key={index} d={pathData} fill="red" />
         ))}
         {isDrawing && currentPoints.length > 0 && (
-          <path d={currentPathData} fill="darkred" />
+          <path d={currentPathData} fill="red" />
         )}
       </svg>
     </>
