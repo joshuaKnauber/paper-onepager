@@ -78,6 +78,7 @@ export function Canvas(props: {
     const canvas = await html2canvas(document.querySelector("#capture")!);
     document.body.appendChild(canvas);
     const canvasDataURL = canvas.toDataURL("image/jpeg", 0.8);
+    console.log(canvasDataURL);
     document.body.removeChild(canvas);
 
     const res = await fetch("/api/refactor", {
@@ -92,6 +93,7 @@ export function Canvas(props: {
     });
     const newHtml = await res.text();
     props.setCurrentState(newHtml);
+    setActive(false);
   };
 
   return (

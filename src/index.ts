@@ -8,7 +8,7 @@ import { requestId } from "hono/request-id";
 import { z } from "zod";
 
 import { openrouter } from "@openrouter/ai-sdk-provider";
-import { generateObject } from "ai";
+import { generateText, stepCountIs, tool } from "ai";
 import * as path from "path";
 
 const app = new Hono();
@@ -35,33 +35,46 @@ app.post(
     })
   ),
   async (c) => {
-    const { object } = await generateObject({
+    let modifiedHtml = c.req.valid("json").html;
+    const { text } = await generateText({
+      // model: openrouter("google/gemini-2.0-flash-lite-001"),
       // model: openrouter("google/gemini-2.5-flash"),
       // model: openrouter("google/gemini-2.5-pro"),
       // model: openrouter("anthropic/claude-3.7-sonnet"),
       model: openrouter("openai/gpt-5"),
-      schema: z.object({
-        change: z.object({
-          replaceHtml: z
-            .string()
-            .describe(
-              "Part of the original HTML you want to replace. This should be a valid html snippet from the original HTML"
-            ),
-          replaceWithHtml: z
-            .string()
-            .describe(
-              "The new content to replace the original HTML. This should be the valid html snippet to replace the part of the original HTML with"
-            ),
-        }),
-      }),
       temperature: 0.1,
+      stopWhen: stepCountIs(3),
+      tools: {
+        editHtml: tool({
+          description: "Make an edit to the HTML by replacing part of it",
+          inputSchema: z.object({
+            replaceHtml: z
+              .string()
+              .describe(
+                "The part of the original HTML you want to replace. This can include regular expressions for matching bigger chunks of the html"
+              ),
+            replaceWithHTml: z
+              .string()
+              .describe(
+                "The new HTML you want to replace the original section with"
+              ),
+          }),
+          // location below is inferred to be a string:
+          execute: async ({ replaceHtml, replaceWithHTml }) => {
+            console.log(`Replacing "${replaceHtml}" with "${replaceWithHTml}"`);
+            const oldHtml = modifiedHtml;
+            const expression = new RegExp(replaceHtml, "g");
+            modifiedHtml = modifiedHtml.replace(expression, replaceWithHTml);
+            return { success: oldHtml !== modifiedHtml, newHtml: modifiedHtml };
+          },
+        }),
+      },
       messages: [
         {
           role: "system",
           content: `
 You are a coding assistant that makes changes based on the users input.
-You receive the current state of the page and a drawover the user made. Make the changes to the HTML to implement the changes from the drawover.
-Respond with the changes you need to make to the html.
+You receive the current state of the page and a drawover the user made. Use the modify tool provided to you to make changes to the HTML until it matches the drawover.
 
 ---
 
@@ -80,12 +93,7 @@ ${c.req.valid("json").html}
         },
       ],
     });
-    console.log(object.change);
-    let newHtml = c.req.valid("json").html;
-    for (const change of [object.change]) {
-      newHtml = newHtml.replace(change.replaceHtml, change.replaceWithHtml);
-    }
-    return c.text(newHtml);
+    return c.text(modifiedHtml);
   }
 );
 

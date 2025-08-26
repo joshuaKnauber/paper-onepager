@@ -1,205 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-900 text-white">
-    <!-- Hero Section -->
-    <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900">
-        <div class="text-center max-w-4xl mx-auto px-6">
-            <div class="mb-8">
-                <div class="w-32 h-32 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 mx-auto mb-6 flex items-center justify-center text-4xl font-bold text-white">
-                    JD
-                </div>
-            </div>
-            <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r color-black bg-clip-text">
-                John Doe
-            </h1>
-            <p class="text-xl md:text-2xl text-gray-800 mb-8">
-                Full Stack Developer & UI/UX Designer
-            </p>
-            <p class="text-lg text-gray-800 mb-12 max-w-2xl mx-auto leading-relaxed">
-                I create beautiful, functional, and user-centered digital experiences. 
-                Passionate about clean code and innovative design solutions.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 rounded-full font-semibold transition-all transform hover:scale-105">
-                    View My Work
-                </button>
-                <button class="border-2 border-gray-300 hover:border-white text-gray-300 hover:text-white px-8 py-4 rounded-full font-semibold transition-all">
-                    Download CV
-                </button>
-            </div>
+<div class="w-full p-6 min-h-screen">
+    <div class="mx-auto w-full max-w-5xl flex flex-col gap-6">
+        <section class="flex flex-col gap-6 items-start p-12 border rounded-md bg-container border-border">
+            <img src="https://pbs.twimg.com/profile_images/1769864178582306816/GXZSHO_x_400x400.jpg" class="size-28 rounded-xl object-cover"/>
+            <h1 class="font-medium text-4xl tracking-tight leading-10">Hey I'm Josh — I love building tools for creatives.<br/><span class="opacity-50 font-normal">Currently at Tesla.</span></h1>
+            <p class="max-w-prose">made this onepager to introduce myself. building creative tools is what got me into programming. seeing people create things with tools i built gives me joy.</p>
+        </section>
+        <section class="flex flex-col gap-6 items-center px-12 py-4 border rounded-md bg-container border-border">
+            <span class="font-medium">Press <kbd class="bg-black/5 font-mono text-xs px-1.5 mx-0.5 py-1 rounded-sm border border-black/10">SPACE</kbd> to edit this page!</span>
+        </section>
+        <div class="flex flex-col md:flex-row w-full gap-6">
+            <section class="flex flex-col flex-1 gap-6 items-start p-12 border rounded-md bg-container border-border">
+                <p>started in 3d, was missing tools so i built them. started selling them etc, taught myself programming</p>
+            </section>
+            <section class="flex flex-col gap-6 flex-1 items-start p-12 border rounded-md bg-container border-border">
+                <p>discovered the world of development, built more things, loved the art side and psychology side, studied interaction design, landed at tesla for design and programming</p>
+            </section>
         </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="py-20 px-6 bg-gray-800/50">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                About Me
-            </h2>
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <p class="text-lg text-gray-300 mb-6 leading-relaxed">
-                        With over 5 years of experience in web development, I specialize in creating 
-                        modern, responsive applications using React, Node.js, and cutting-edge technologies.
-                    </p>
-                    <p class="text-lg text-gray-300 mb-8 leading-relaxed">
-                        I believe in writing clean, maintainable code and creating intuitive user 
-                        experiences that solve real-world problems.
-                    </p>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-gray-800 p-4 rounded-lg">
-                            <h4 class="font-semibold text-purple-400 mb-2">Frontend</h4>
-                            <p class="text-sm text-gray-400">React, TypeScript, Tailwind CSS</p>
-                        </div>
-                        <div class="bg-gray-800 p-4 rounded-lg">
-                            <h4 class="font-semibold text-purple-400 mb-2">Backend</h4>
-                            <p class="text-sm text-gray-400">Node.js, Python, PostgreSQL</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="relative">
-                    <div class="w-full h-96 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl flex items-center justify-center">
-                        <div class="text-6xl">=�</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section class="py-20 px-6">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Skills
-            </h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-gray-800/50 p-8 rounded-2xl border border-gray-700 hover:border-purple-500 transition-colors">
-                    <div class="text-4xl mb-4">�</div>
-                    <h3 class="text-xl font-bold mb-4 text-white">Frontend Development</h3>
-                    <ul class="text-gray-300 space-y-2">
-                        <li>" React & Next.js</li>
-                        <li>" TypeScript & JavaScript</li>
-                        <li>" Tailwind CSS & SCSS</li>
-                        <li>" Responsive Design</li>
-                    </ul>
-                </div>
-                <div class="bg-gray-800/50 p-8 rounded-2xl border border-gray-700 hover:border-purple-500 transition-colors">
-                    <div class="text-4xl mb-4">=�</div>
-                    <h3 class="text-xl font-bold mb-4 text-white">Backend Development</h3>
-                    <ul class="text-gray-300 space-y-2">
-                        <li>" Node.js & Express</li>
-                        <li>" Python & Django</li>
-                        <li>" PostgreSQL & MongoDB</li>
-                        <li>" REST APIs & GraphQL</li>
-                    </ul>
-                </div>
-                <div class="bg-gray-800/50 p-8 rounded-2xl border border-gray-700 hover:border-purple-500 transition-colors">
-                    <div class="text-4xl mb-4"><�</div>
-                    <h3 class="text-xl font-bold mb-4 text-white">Design & Tools</h3>
-                    <ul class="text-gray-300 space-y-2">
-                        <li>" UI/UX Design</li>
-                        <li>" Figma & Adobe XD</li>
-                        <li>" Git & GitHub</li>
-                        <li>" Docker & AWS</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section class="py-20 px-6 bg-gray-800/50">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Featured Projects
-            </h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-gray-800 rounded-2xl overflow-hidden border border-gray-700 hover:border-purple-500 transition-all transform hover:scale-105">
-                    <div class="h-48 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-                        <div class="text-4xl">=�</div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-3 text-white">E-Commerce Platform</h3>
-                        <p class="text-gray-400 mb-4">Full-stack e-commerce solution built with React, Node.js, and Stripe integration.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-purple-500/20 text-purple-300 text-sm rounded-full">React</span>
-                            <span class="px-3 py-1 bg-purple-500/20 text-purple-300 text-sm rounded-full">Node.js</span>
-                            <span class="px-3 py-1 bg-purple-500/20 text-purple-300 text-sm rounded-full">MongoDB</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-800 rounded-2xl overflow-hidden border border-gray-700 hover:border-purple-500 transition-all transform hover:scale-105">
-                    <div class="h-48 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
-                        <div class="text-4xl"><�</div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-3 text-white">Task Management App</h3>
-                        <p class="text-gray-400 mb-4">Collaborative task management tool with real-time updates and team features.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 text-sm rounded-full">TypeScript</span>
-                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 text-sm rounded-full">Socket.io</span>
-                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 text-sm rounded-full">PostgreSQL</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-800 rounded-2xl overflow-hidden border border-gray-700 hover:border-purple-500 transition-all transform hover:scale-105">
-                    <div class="h-48 bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
-                        <div class="text-4xl">=�</div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-3 text-white">Analytics Dashboard</h3>
-                        <p class="text-gray-400 mb-4">Real-time analytics dashboard with interactive charts and data visualization.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-green-500/20 text-green-300 text-sm rounded-full">Vue.js</span>
-                            <span class="px-3 py-1 bg-green-500/20 text-green-300 text-sm rounded-full">D3.js</span>
-                            <span class="px-3 py-1 bg-green-500/20 text-green-300 text-sm rounded-full">Python</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="py-20 px-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Let's Work Together
-            </h2>
-            <p class="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
-                I'm always open to discussing new opportunities and interesting projects. 
-                Let's create something amazing together!
-            </p>
-            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <a href="mailto:john@example.com" class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 rounded-full font-semibold transition-all transform hover:scale-105 flex items-center gap-2">
-                    =� Get In Touch
-                </a>
-                <div class="flex gap-4">
-                    <a href="#" class="w-12 h-12 bg-gray-800 hover:bg-purple-600 rounded-full flex items-center justify-center transition-colors">
-                        <span class="text-xl">=�</span>
-                    </a>
-                    <a href="#" class="w-12 h-12 bg-gray-800 hover:bg-purple-600 rounded-full flex items-center justify-center transition-colors">
-                        <span class="text-xl">=1</span>
-                    </a>
-                    <a href="#" class="w-12 h-12 bg-gray-800 hover:bg-purple-600 rounded-full flex items-center justify-center transition-colors">
-                        <span class="text-xl">=</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="py-8 px-6 bg-gray-800 border-t border-gray-700">
-        <div class="max-w-6xl mx-auto text-center">
-            <p class="text-gray-400">� 2024 John Doe. All rights reserved.</p>
-        </div>
-    </footer>
-</body>
-</html>
+        <section class="flex flex-col gap-6 items-center p-12 border rounded-md bg-container border-border">
+            <p class="max-w-prose text-center text-2xl font-medium">why paper, programming and design are tools to achieve an outcome, removing the friction to get to that outcome is what i want to do, people do great things if you give them the right tools, why paper</p>
+        </section>
+        <section class="flex flex-col gap-6 items-start p-12 border rounded-md bg-container border-border">
+            <p class="max-w-prose">timeline</p>
+        </section>
+        <section class="flex flex-col gap-6 items-start p-12 border rounded-md bg-container border-border">
+            <p class="max-w-prose">what inspires me</p>
+        </section>
+        <section class="flex flex-col gap-6 items-start p-12 border rounded-md bg-container border-border">
+            <p class="max-w-prose">what i'm good at and what i want to do</p>
+        </section>
+    </div>
+</div>

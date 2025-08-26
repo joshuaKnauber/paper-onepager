@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@paper-design/shaders-react": "^0.0.46",
+    "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.12",
     "html2canvas-pro": "^1.5.11",
     "perfect-freehand": "^1.2.2",

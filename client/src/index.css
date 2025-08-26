@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+@font-face {
+    font-family: Satoshi;
+    src: url('./assets/fonts/Satoshi-Variable.woff2');
+}
+
+@font-face {
+    font-family: JetbrainsMono;
+    src: url('./assets/fonts/JetbrainsMono-Medium.ttf');
+}
+
+@theme {
+    --color-container: #F0EFEB;
+    --color-border: #CECBBF;
+}
+
+body {
+    font-family: Satoshi, sans-serif;
+}
+
+kbd {
+    font-family: JetbrainsMono, monospace;
+}
