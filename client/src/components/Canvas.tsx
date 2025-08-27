@@ -229,13 +229,22 @@ function CanvasToolbar(props: {
   return (
     <>
       {!props.hasStrokes && props.visible && (
-        <img
-          src="/edit.svg"
-          className={twMerge(
-            props.visible ? "opacity-100" : "opacity-0",
-            "fixed transition-all top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[80vw] max-w-[700px] pointer-events-none"
-          )}
-        />
+        <>
+          <img
+            src="/edit.svg"
+            className={twMerge(
+              props.visible ? "opacity-100" : "opacity-0",
+              "fixed hidden md:block transition-all top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[80vw] max-w-[700px] pointer-events-none"
+            )}
+          />
+          <img
+            src="/edit-mobile.svg"
+            className={twMerge(
+              props.visible ? "opacity-100" : "opacity-0",
+              "fixed md:hidden transition-all top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[90vw] max-w-[700px] pointer-events-none"
+            )}
+          />
+        </>
       )}
       <div
         className={twMerge(
@@ -272,7 +281,7 @@ function CanvasToolbar(props: {
             props.isDrawing && "pointer-events-none"
           )}
         >
-          <XIcon className="md:size-5 size-7" />
+          <XIcon className="md:size-5 size-6" />
         </button>
       )}
       <button
