@@ -101,17 +101,17 @@ export function Canvas(props: {
         setActive={setActive}
         onAccept={onAccept}
       />
-      {(isMutating || isScreenshotting || true) && (
+      {(isMutating || isScreenshotting) && (
         <PulsingBorder
           className={twMerge(
-            "fixed top-0 left-0 w-full inset-0 pointer-events-none z-20"
+            "fixed left-0 w-full h-[100dvh] bottom-0 pointer-events-none z-20"
           )}
           colorBack="rgba(0, 0, 0, 0)"
           roundness={0}
           thickness={0.1}
           softness={0.8}
           intensity={0.2}
-          bloom={0.45}
+          bloom={0.6}
           spots={3}
           spotSize={0.4}
           pulse={0.2}
@@ -271,14 +271,14 @@ function CanvasToolbar(props: {
           onClick={props.onClear}
           className="bg-white rounded-sm size-16 md:size-10 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom"
         >
-          <EraserIcon className="size-6 md:size-5" />
+          <EraserIcon className="size-6 md:size-5 pointer-events-none" />
         </button>
         <button
           onClick={props.onAccept}
           disabled={!props.hasStrokes}
           className="bg-white rounded-sm size-16 md:size-10 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom"
         >
-          <CheckIcon className="size-6 md:size-5" />
+          <CheckIcon className="size-6 md:size-5 pointer-events-none" />
         </button>
       </div>
       {props.visible && (
@@ -289,7 +289,7 @@ function CanvasToolbar(props: {
             props.isDrawing && "pointer-events-none"
           )}
         >
-          <XIcon className="md:size-5 size-6" />
+          <XIcon className="md:size-5 size-6 pointer-events-none" />
         </button>
       )}
       <button
