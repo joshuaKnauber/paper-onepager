@@ -1,11 +1,38 @@
+import { PulsingBorder } from "@paper-design/shaders-react";
 import html2canvas from "html2canvas-pro";
 import { CheckIcon, EraserIcon, XIcon } from "lucide-react";
 import getStroke from "perfect-freehand";
 import { useEffect, useState, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
+import useSWRMutation from "swr/mutation";
 import { twMerge } from "tailwind-merge";
 import { useMousePosition } from "../hooks/useMousePosition";
 import { getSvgPathFromStroke } from "./getSvgPathFromStroke";
+
+async function postUpdate(
+  url: string,
+  {
+    arg,
+  }: {
+    arg: {
+      body: {
+        html: string;
+        drawoverUrl: string;
+        pageUrl: string;
+      };
+    };
+  }
+) {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(arg.body),
+  });
+  const text = await res.text();
+  return text;
+}
 
 export function Canvas(props: {
   currentHtml: string;
@@ -17,6 +44,11 @@ export function Canvas(props: {
     [number, number, number][]
   >([]);
   const [isDrawing, setIsDrawing] = useState(false);
+
+  const { trigger: updateUi, isMutating } = useSWRMutation(
+    "/api/refactor",
+    postUpdate
+  );
 
   function handlePointerDown(e: PointerEvent<SVGSVGElement>) {
     if (!active) return;
@@ -86,24 +118,47 @@ export function Canvas(props: {
     const canvasPageDataURL = canvasPage.toDataURL("image/jpeg", 0.8);
     document.body.removeChild(canvasPage);
 
-    const res = await fetch("/api/refactor", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    setActive(false);
+    const newHtml = await updateUi({
+      body: {
         html: props.currentHtml,
         drawoverUrl: canvasDataURL,
         pageUrl: canvasPageDataURL,
-      }),
+      },
     });
-    const newHtml = await res.text();
+
     props.setCurrentState(newHtml);
-    setActive(false);
   };
 
   return (
     <>
+      <PulsingBorder
+        className={twMerge(
+          "fixed top-0 left-0 w-full h-full pointer-events-none z-20 transition-all",
+          isMutating ? "opacity-100" : "opacity-0 scale-150"
+        )}
+        colorBack="rgba(0, 0, 0, 0)"
+        roundness={0}
+        thickness={0.1}
+        softness={0.8}
+        intensity={0.2}
+        bloom={0.45}
+        spots={3}
+        spotSize={0.4}
+        pulse={0.2}
+        smoke={0.35}
+        smokeSize={0.6}
+        scale={1}
+        rotation={0}
+        offsetX={0}
+        offsetY={0}
+        speed={1}
+        colors={[
+          "hsl(347, 89%, 55%)",
+          "hsl(205, 75%, 60%)",
+          "hsl(39, 100%, 50%)",
+        ]}
+      />
       {createPortal(
         <CanvasToolbar
           visible={active}
