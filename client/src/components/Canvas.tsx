@@ -191,6 +191,7 @@ function DrawingSurface(props: {
           onClear={() => setStrokes([])}
           onDiscard={() => props.setActive(false)}
           onAccept={async () => {
+            if (strokes.length === 0) return;
             await props.onAccept();
             setStrokes([]);
             setCurrentPoints([]);
