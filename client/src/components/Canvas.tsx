@@ -40,6 +40,7 @@ export function Canvas(props: {
 }) {
   const [active, setActive] = useState(false);
 
+  const [isScreenshotting, setIsScreenshotting] = useState(false);
   const { trigger: updateUi, isMutating } = useSWRMutation(
     "/api/refactor",
     postUpdate
@@ -64,26 +65,33 @@ export function Canvas(props: {
   }, [active]);
 
   const onAccept = async () => {
-    const canvas = await html2canvas(document.querySelector("#viewport")!);
-    document.body.appendChild(canvas);
-    const canvasDataURL = canvas.toDataURL("image/jpeg", 0.8);
-    document.body.removeChild(canvas);
-
-    const canvasPage = await html2canvas(document.querySelector("#page")!);
-    document.body.appendChild(canvasPage);
-    const canvasPageDataURL = canvasPage.toDataURL("image/jpeg", 0.8);
-    document.body.removeChild(canvasPage);
-
+    setIsScreenshotting(true);
     setActive(false);
-    const newHtml = await updateUi({
-      body: {
-        html: props.currentHtml,
-        drawoverUrl: canvasDataURL,
-        pageUrl: canvasPageDataURL,
-      },
-    });
+    try {
+      const canvas = await html2canvas(document.querySelector("#viewport")!);
+      document.body.appendChild(canvas);
+      const canvasDataURL = canvas.toDataURL("image/jpeg", 0.8);
+      document.body.removeChild(canvas);
 
-    props.setCurrentState(newHtml);
+      const canvasPage = await html2canvas(document.querySelector("#page")!);
+      document.body.appendChild(canvasPage);
+      const canvasPageDataURL = canvasPage.toDataURL("image/jpeg", 0.8);
+      document.body.removeChild(canvasPage);
+
+      const newHtml = await updateUi({
+        body: {
+          html: props.currentHtml,
+          drawoverUrl: canvasDataURL,
+          pageUrl: canvasPageDataURL,
+        },
+      });
+
+      props.setCurrentState(newHtml);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsScreenshotting(false);
+    }
   };
 
   return (
@@ -93,7 +101,7 @@ export function Canvas(props: {
         setActive={setActive}
         onAccept={onAccept}
       />
-      {isMutating && (
+      {(isMutating || isScreenshotting) && (
         <PulsingBorder
           className={twMerge(
             "fixed top-0 left-0 w-full h-[100lvh] pointer-events-none z-20"
