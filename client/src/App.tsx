@@ -1,4 +1,4 @@
-import { ditheringFragmentShader, ShaderMount } from "@paper-design/shaders";
+import { ShaderMount, simplexNoiseFragmentShader } from "@paper-design/shaders";
 import { DotGrid } from "@paper-design/shaders-react";
 import { useLayoutEffect, useState } from "react";
 
@@ -18,17 +18,21 @@ export function App() {
 
     new ShaderMount(
       editContainer,
-      ditheringFragmentShader,
+      simplexNoiseFragmentShader,
       {
-        u_colorBack: [0.9375, 0.933, 0.917, 1.0],
-        u_colorFront: [0.804, 0.792, 0.746, 1.0],
-        u_shape: 0.0,
-        u_type: 1.0,
-        u_pxSize: 9.0,
-        u_offsetX: 0.0,
-        u_offsetY: 0.0,
-        u_scale: 1.0,
-        u_rotation: 0.0,
+        u_fit: 2,
+        u_scale: 2,
+        u_rotation: 0,
+        u_originX: 0,
+        u_originY: 0,
+        u_offsetX: 0,
+        u_offsetY: 0,
+        u_worldWidth: 0,
+        u_worldHeight: 0,
+        u_colors: [[1, 0.48, 0, 1.0]],
+        u_colorsCount: 3,
+        u_stepsPerColor: 3,
+        u_softness: 4,
       },
       undefined,
       1.0

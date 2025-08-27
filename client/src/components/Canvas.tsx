@@ -102,7 +102,7 @@ export function Canvas(props: {
         setActive={setActive}
         onAccept={onAccept}
       />
-      {(isMutating || isScreenshotting) && (
+      {(isMutating || isScreenshotting || true) && (
         <PulsingBorder
           className={twMerge(
             "fixed left-0 w-full top-0 bottom-0 pointer-events-none z-20"
@@ -110,24 +110,20 @@ export function Canvas(props: {
           colorBack="rgba(0, 0, 0, 0)"
           roundness={0}
           thickness={0.1}
-          softness={0.8}
-          intensity={0.2}
-          bloom={0.6}
+          softness={3}
+          intensity={0.4}
+          bloom={0.5}
           spots={3}
           spotSize={0.4}
           pulse={0.2}
-          smoke={0.35}
-          smokeSize={0.6}
-          scale={1}
+          smoke={0.15}
+          smokeSize={1}
+          scale={0.99}
           rotation={0}
           offsetX={0}
           offsetY={0}
           speed={1}
-          colors={[
-            "hsl(347, 89%, 55%)",
-            "hsl(205, 75%, 60%)",
-            "hsl(39, 100%, 50%)",
-          ]}
+          colors={["#d62828", "#f77f00", "#fcbf49", "#eae2b7"]}
         />
       )}
     </>
@@ -208,7 +204,7 @@ function DrawingSurface(props: {
         className={twMerge(
           "fixed z-10 top-0 cursor-crosshair left-0 w-full h-full transition-all duration-150 touch-none",
           props.active
-            ? "bg-black/50 pointer-events-auto opacity-100"
+            ? "bg-black/40 pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
         )}
       >
