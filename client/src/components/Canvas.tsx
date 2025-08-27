@@ -200,7 +200,7 @@ function CanvasToolbar(props: {
       <button
         onClick={props.onEdit}
         className={twMerge(
-          "fixed z-10 bottom-4 left-1/2 -translate-x-1/2 w-[100px] bg-white rounded-4xl h-12 md:hidden flex items-center justify-center transition-all",
+          "fixed z-10 bottom-6 left-1/2 -translate-x-1/2 w-[100px] shadow-lg bg-white rounded-4xl h-12 md:hidden flex items-center justify-center transition-all",
           !props.visible ? "translate-y-0 scale-100" : "translate-y-20 scale-50"
         )}
       >
