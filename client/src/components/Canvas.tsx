@@ -1,5 +1,5 @@
 import html2canvas from "html2canvas-pro";
-import { CheckIcon, EraserIcon, PencilIcon, XIcon } from "lucide-react";
+import { CheckIcon, EraserIcon, XIcon } from "lucide-react";
 import getStroke from "perfect-freehand";
 import { useEffect, useState, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
@@ -200,11 +200,11 @@ function CanvasToolbar(props: {
       <button
         onClick={props.onEdit}
         className={twMerge(
-          "fixed bottom-4 right-4 bg-white rounded-sm size-14 md:hidden flex items-center justify-center transition-all",
+          "fixed z-10 bottom-4 left-1/2 -translate-x-1/2 w-[100px] bg-white rounded-4xl h-12 md:hidden flex items-center justify-center transition-all",
           !props.visible ? "translate-y-0 scale-100" : "translate-y-20 scale-50"
         )}
       >
-        <PencilIcon className="size-5" />
+        <span className="font-semibold">Edit</span>
       </button>
     </>
   );

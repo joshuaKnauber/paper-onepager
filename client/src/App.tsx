@@ -41,7 +41,7 @@ export function App() {
           currentHtml={currentState}
           setCurrentState={(newHtml) => setHistory([...history, newHtml])}
         />
-        <div id="page" className="w-full h-full overflow-y-auto">
+        <div id="page" className="w-full h-full overflow-y-auto pb-16 md:pb-0">
           <div dangerouslySetInnerHTML={{ __html: currentState }}></div>
         </div>
         <DotGrid
