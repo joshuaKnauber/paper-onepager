@@ -39,60 +39,16 @@ export function Canvas(props: {
   setCurrentState: (value: string) => void;
 }) {
   const [active, setActive] = useState(false);
-  const [strokes, setStrokes] = useState<string[]>([]);
-  const [currentPoints, setCurrentPoints] = useState<
-    [number, number, number][]
-  >([]);
-  const [isDrawing, setIsDrawing] = useState(false);
 
   const { trigger: updateUi, isMutating } = useSWRMutation(
     "/api/refactor",
     postUpdate
   );
 
-  function handlePointerDown(e: PointerEvent<SVGSVGElement>) {
-    if (!active) return;
-    setIsDrawing(true);
-    setCurrentPoints([[e.pageX, e.pageY, e.pressure]]);
-  }
-
-  function handlePointerMove(e: PointerEvent<SVGSVGElement>) {
-    if (!isDrawing || e.buttons !== 1) return;
-    setCurrentPoints([...currentPoints, [e.pageX, e.pageY, e.pressure]]);
-  }
-
-  function handlePointerUp() {
-    if (!isDrawing) return;
-    setIsDrawing(false);
-
-    if (currentPoints.length > 0) {
-      const stroke = getStroke(currentPoints, {
-        size: 8,
-        thinning: 0.5,
-        smoothing: 0.5,
-        streamline: 0.5,
-      });
-      const pathData = getSvgPathFromStroke(stroke);
-      setStrokes([...strokes, pathData]);
-    }
-
-    setCurrentPoints([]);
-  }
-
-  const currentStroke = getStroke(currentPoints, {
-    size: 8,
-    thinning: 0.5,
-    smoothing: 0.5,
-    streamline: 0.5,
-  });
-  const currentPathData = getSvgPathFromStroke(currentStroke);
-
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.code === "Space") {
         e.preventDefault();
-        setCurrentPoints([]);
-        setStrokes([]);
         setActive((c) => !c);
       } else if (e.code === "Escape" && active) {
         e.preventDefault();
@@ -132,42 +88,106 @@ export function Canvas(props: {
 
   return (
     <>
-      <PulsingBorder
-        className={twMerge(
-          "fixed top-0 left-0 w-full h-[100lvh] pointer-events-none z-20",
-          isMutating ? "opacity-100" : "opacity-0"
-        )}
-        colorBack="rgba(0, 0, 0, 0)"
-        roundness={0}
-        thickness={0.1}
-        softness={0.8}
-        intensity={0.2}
-        bloom={0.45}
-        spots={3}
-        spotSize={0.4}
-        pulse={0.2}
-        smoke={0.35}
-        smokeSize={0.6}
-        scale={1}
-        rotation={0}
-        offsetX={0}
-        offsetY={0}
-        speed={1}
-        colors={[
-          "hsl(347, 89%, 55%)",
-          "hsl(205, 75%, 60%)",
-          "hsl(39, 100%, 50%)",
-        ]}
+      <DrawingSurface
+        active={active}
+        setActive={setActive}
+        onAccept={onAccept}
       />
+      {isMutating && (
+        <PulsingBorder
+          className={twMerge(
+            "fixed top-0 left-0 w-full h-[100lvh] pointer-events-none z-20"
+          )}
+          colorBack="rgba(0, 0, 0, 0)"
+          roundness={0}
+          thickness={0.1}
+          softness={0.8}
+          intensity={0.2}
+          bloom={0.45}
+          spots={3}
+          spotSize={0.4}
+          pulse={0.2}
+          smoke={0.35}
+          smokeSize={0.6}
+          scale={1}
+          rotation={0}
+          offsetX={0}
+          offsetY={0}
+          speed={1}
+          colors={[
+            "hsl(347, 89%, 55%)",
+            "hsl(205, 75%, 60%)",
+            "hsl(39, 100%, 50%)",
+          ]}
+        />
+      )}
+    </>
+  );
+}
+
+function DrawingSurface(props: {
+  active: boolean;
+  setActive: (value: boolean) => void;
+  onAccept: () => Promise<void>;
+}) {
+  const [strokes, setStrokes] = useState<string[]>([]);
+  const [currentPoints, setCurrentPoints] = useState<
+    [number, number, number][]
+  >([]);
+  const [isDrawing, setIsDrawing] = useState(false);
+
+  function handlePointerDown(e: PointerEvent<SVGSVGElement>) {
+    if (!props.active) return;
+    setIsDrawing(true);
+    setCurrentPoints([[e.pageX, e.pageY, e.pressure]]);
+  }
+
+  function handlePointerMove(e: PointerEvent<SVGSVGElement>) {
+    if (!isDrawing || e.buttons !== 1) return;
+    setCurrentPoints([...currentPoints, [e.pageX, e.pageY, e.pressure]]);
+  }
+
+  function handlePointerUp() {
+    if (!isDrawing) return;
+    setIsDrawing(false);
+
+    if (currentPoints.length > 0) {
+      const stroke = getStroke(currentPoints, {
+        size: 8,
+        thinning: 0.5,
+        smoothing: 0.5,
+        streamline: 0.5,
+      });
+      const pathData = getSvgPathFromStroke(stroke);
+      setStrokes([...strokes, pathData]);
+    }
+
+    setCurrentPoints([]);
+  }
+
+  const currentStroke = getStroke(currentPoints, {
+    size: 8,
+    thinning: 0.5,
+    smoothing: 0.5,
+    streamline: 0.5,
+  });
+  const currentPathData = getSvgPathFromStroke(currentStroke);
+
+  return (
+    <>
       {createPortal(
         <CanvasToolbar
-          visible={active}
+          visible={props.active}
           isDrawing={isDrawing}
           hasStrokes={strokes.length > 0 || currentPoints.length > 0}
           onClear={() => setStrokes([])}
-          onDiscard={() => setActive(false)}
-          onAccept={onAccept}
-          onEdit={() => setActive(true)}
+          onDiscard={() => props.setActive(false)}
+          onAccept={async () => {
+            await props.onAccept();
+            setStrokes([]);
+            setCurrentPoints([]);
+          }}
+          onEdit={() => props.setActive(true)}
         />,
         document.querySelector("#root")!
       )}
@@ -177,8 +197,8 @@ export function Canvas(props: {
         onPointerUp={handlePointerUp}
         className={twMerge(
           "fixed z-10 top-0 cursor-crosshair left-0 w-full h-full transition-all duration-150 touch-none",
-          active
-            ? "bg-black/10 pointer-events-auto opacity-100"
+          props.active
+            ? "bg-black/50 pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
         )}
       >
