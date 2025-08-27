@@ -1,6 +1,7 @@
 import { serveStatic } from "@hono/node-server/serve-static";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
+import { basicAuth } from "hono/basic-auth";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { requestId } from "hono/request-id";
@@ -17,13 +18,13 @@ app.use("*", cors());
 app.use(logger());
 app.use("*", requestId());
 
-// app.use(
-//   "*",
-//   basicAuth({
-//     username: process.env.PAGE_USERNAME!,
-//     password: process.env.PAGE_PASSWORD!,
-//   })
-// );
+app.use(
+  "*",
+  basicAuth({
+    username: process.env.PAGE_USERNAME!,
+    password: process.env.PAGE_PASSWORD!,
+  })
+);
 
 app.post(
   "/api/refactor",
