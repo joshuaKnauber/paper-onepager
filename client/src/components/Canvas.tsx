@@ -192,7 +192,10 @@ function CanvasToolbar(props: {
       {props.visible && (
         <button
           onClick={props.onDiscard}
-          className="fixed top-6 right-6 z-10 cursor-pointer"
+          className={twMerge(
+            "fixed top-6 right-6 z-20 cursor-pointer",
+            props.isDrawing && "pointer-events-none"
+          )}
         >
           <XIcon className="size-5" />
         </button>
@@ -200,11 +203,11 @@ function CanvasToolbar(props: {
       <button
         onClick={props.onEdit}
         className={twMerge(
-          "fixed z-10 bottom-6 left-1/2 -translate-x-1/2 w-[100px] shadow-lg bg-white rounded-4xl h-12 md:hidden flex items-center justify-center transition-all",
+          "fixed z-10 bottom-6 left-1/2 -translate-x-1/2 w-fit px-8 shadow-lg bg-white rounded-4xl h-12 md:hidden flex items-center justify-center transition-all",
           !props.visible ? "translate-y-0 scale-100" : "translate-y-20 scale-50"
         )}
       >
-        <span className="font-semibold">Edit</span>
+        <span className="font-semibold">Edit the page</span>
       </button>
     </>
   );
