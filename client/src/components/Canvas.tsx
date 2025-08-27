@@ -102,7 +102,7 @@ export function Canvas(props: {
         setActive={setActive}
         onAccept={onAccept}
       />
-      {(isMutating || isScreenshotting || true) && (
+      {(isMutating || isScreenshotting) && (
         <PulsingBorder
           className={twMerge(
             "fixed left-0 w-full top-0 bottom-0 pointer-events-none z-20"
