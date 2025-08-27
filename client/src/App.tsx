@@ -9,7 +9,7 @@ export function App() {
 
   return (
     <>
-      <div className="w-screen h-screen overflow-y-auto" id="capture">
+      <div className="w-screen h-[100dvh] overflow-y-auto" id="capture">
         <Canvas
           currentHtml={currentState}
           setCurrentState={(newHtml) => setHistory([...history, newHtml])}
