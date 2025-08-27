@@ -6,6 +6,7 @@ import { useEffect, useState, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import useSWRMutation from "swr/mutation";
 import { twMerge } from "tailwind-merge";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useMousePosition } from "../hooks/useMousePosition";
 import { getSvgPathFromStroke } from "./getSvgPathFromStroke";
 
@@ -231,13 +232,14 @@ function CanvasToolbar(props: {
   onDiscard: () => void;
   onAccept: () => void;
 }) {
+  const [showHint, setShowHint] = useLocalStorage("show-draw-hint", true);
   const mousePosition = useMousePosition();
   const isInLowerMiddle =
     mousePosition && mousePosition[1] / window.innerHeight > 0.6;
 
   return (
     <>
-      {!props.hasStrokes && props.visible && (
+      {!props.hasStrokes && props.visible && showHint && (
         <>
           <img
             src="/edit.svg"
@@ -275,7 +277,10 @@ function CanvasToolbar(props: {
           <EraserIcon className="size-6 md:size-5 pointer-events-none" />
         </button>
         <button
-          onClick={props.onAccept}
+          onClick={() => {
+            setShowHint(false);
+            props.onAccept();
+          }}
           disabled={!props.hasStrokes}
           className="bg-white rounded-sm size-16 md:size-12 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom"
         >
