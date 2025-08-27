@@ -104,7 +104,7 @@ export function Canvas(props: {
       {(isMutating || isScreenshotting || true) && (
         <PulsingBorder
           className={twMerge(
-            "absolute top-0 left-0 w-full inset-0 pointer-events-none z-20"
+            "fixed top-0 left-0 w-full inset-0 pointer-events-none z-20"
           )}
           colorBack="rgba(0, 0, 0, 0)"
           roundness={0}
