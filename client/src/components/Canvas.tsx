@@ -232,7 +232,7 @@ function CanvasToolbar(props: {
 }) {
   const mousePosition = useMousePosition();
   const isInLowerMiddle =
-    mousePosition && window.innerHeight - mousePosition[1] < 300;
+    mousePosition && mousePosition[1] / window.innerHeight > 0.6;
 
   return (
     <>
@@ -264,19 +264,19 @@ function CanvasToolbar(props: {
           // move out of the way for the mouse
           ((props.isDrawing && isInLowerMiddle) ||
             (props.visible && !props.hasStrokes)) &&
-            "pointer-events-none translate-y-8 scale-90 opacity-50 gap-2 [&_button]:nth-of-type-[1]:-rotate-[10deg] [&_button]:nth-of-type-[2]:rotate-[10deg]"
+            "pointer-events-none md:translate-y-8 translate-y-12 scale-90 md:opacity-50 gap-2 [&_button]:nth-of-type-[1]:-rotate-[10deg] [&_button]:nth-of-type-[2]:rotate-[10deg]"
         )}
       >
         <button
           onClick={props.onClear}
-          className="bg-white rounded-sm size-16 md:size-10 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom"
+          className="bg-white rounded-sm size-16 md:size-12 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom"
         >
           <EraserIcon className="size-6 md:size-5 pointer-events-none" />
         </button>
         <button
           onClick={props.onAccept}
           disabled={!props.hasStrokes}
-          className="bg-white rounded-sm size-16 md:size-10 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom"
+          className="bg-white rounded-sm size-16 md:size-12 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom"
         >
           <CheckIcon className="size-6 md:size-5 pointer-events-none" />
         </button>

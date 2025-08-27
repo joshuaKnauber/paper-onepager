@@ -8,8 +8,8 @@ export function useMousePosition() {
       setPosition([e.clientX, e.clientY]);
     };
 
-    window.addEventListener("mousemove", onMouseMove);
-    return () => window.removeEventListener("mousemove", onMouseMove);
+    window.addEventListener("pointermove", onMouseMove);
+    return () => window.removeEventListener("pointermove", onMouseMove);
   }, []);
 
   return position;
