@@ -252,7 +252,7 @@ function CanvasToolbar(props: {
             src="/edit-mobile.svg"
             className={twMerge(
               props.visible ? "opacity-100" : "opacity-0",
-              "fixed md:hidden transition-all top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[90vw] max-w-[700px] pointer-events-none"
+              "fixed md:hidden transition-all top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[70vw] max-w-[700px] pointer-events-none"
             )}
           />
         </>
