@@ -44,7 +44,7 @@ export function Canvas(props: {
 
   const [isScreenshotting, setIsScreenshotting] = useState(false);
   const { trigger: updateUi, isMutating } = useSWRMutation(
-    "/api/refactor",
+    "/api/edit",
     postUpdate
   );
 

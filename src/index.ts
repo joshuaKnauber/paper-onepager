@@ -18,16 +18,18 @@ app.use("*", cors());
 app.use(logger());
 app.use("*", requestId());
 
-app.use(
-  "*",
-  basicAuth({
-    username: process.env.PAGE_USERNAME!,
-    password: process.env.PAGE_PASSWORD!,
-  })
-);
+if (process.env.PAGE_USERNAME && process.env.PAGE_PASSWORD) {
+  app.use(
+    "*",
+    basicAuth({
+      username: process.env.PAGE_USERNAME,
+      password: process.env.PAGE_PASSWORD,
+    })
+  );
+}
 
 app.post(
-  "/api/refactor",
+  "/api/edit",
   zValidator(
     "json",
     z.object({
@@ -37,36 +39,66 @@ app.post(
     })
   ),
   async (c) => {
-    const { text: analysis } = await generateText({
+    const { text: newHtml } = await generateText({
       model: openrouter("google/gemini-2.5-flash"),
-      temperature: 0.2,
+      temperature: 0.1,
       messages: [
         {
           role: "system",
           content: `
-Your job is to analyze the screenshot of a website you are given. The screenshot has a drawing by the user on top of it. Describe the changes the user wants to make to the website.
-Respond with a description of the changes, referencing the elements that need to change or be added.
+🎨 YOU ARE A DESIGN INTERPRETER - NOT A CODE REVIEWER
 
-Changes are drawn over the original website in red.
-These are things the user will likely want to do and you should recognize:
-- Remove parts of the UI. For this the user will likely cross them out. Only remove sections if the user crosses them out explicitely.
-- Add new elements to the UI. For this the user will likely draw them in. Common elements will include:
-  - Container: Square
-  - Divider: Line
-  - Text: Scribbled line (size determines if header or content)
-  - Image: Square with cross
-  - Button: Rectangle with scribbled text inside
-- Change elements. For this the user will likely draw an arrow to a picture of how the element should look afterwards
+FUNDAMENTAL RULE: Every single drawing is a DESIGN ELEMENT to be implemented in HTML. 
+- Drawings = Real website elements to add/modify
+- NOT annotations, NOT comments, NOT markup notes
+- NOT "suggestions" or "feedback" 
+- They are ACTUAL CONTENT for the final webpage
 
-You will receive two screenshots:
-- An image of the entire page without any edits
-- An image of the section the user wants to edit with the changes drawn over in red
+The user sketched these elements because they want them on their website. Your job is to make their sketch into reality by adding the corresponding HTML elements.
 
-Keep your response short and concise. Describe precisely the changes the user wants to make.
+WHAT YOU RECEIVE:
+1. Original website screenshot
+2. Same screenshot with RED DRAWINGS = new design elements to implement
+3. Current HTML code
+
+YOUR MISSION: Transform every drawing into actual HTML elements and add them to the page.
+
+HOW TO INTERPRET DRAWINGS:
+
+✅ SHAPES = NEW HTML ELEMENTS (Default assumption):
+- Rectangle/square = <div> container, card, or section
+- Rectangle with scribbles = <button> with that text content
+- Square with X/cross = <img> tag (use Picsum photos)
+- Circle/oval = Profile image, avatar, icon
+- Lines = <hr> dividers, borders, separators
+- Scribbled text = <h1>, <h2>, <p> based on size
+
+✅ DRAWINGS ON EXISTING ELEMENTS = MODIFICATIONS:
+- Text over existing text = Change content
+- Arrows = Move elements to new positions
+- Boxes around elements = Add containers, styling
+
+❌ ONLY REMOVE IF EXPLICITLY CROSSED OUT:
+- Heavy strikethrough lines over existing content
+- Big X marks directly on top of existing elements
+
+CORE PRINCIPLE: When you see ANY drawing, ask "What HTML element does this represent?" not "Is this just a note?"
+
+PRESERVE + ENHANCE: Keep all existing content and ADD the drawn elements to create an enhanced version of the page.
+
+Only use existing assets/styles from the HTML or common HTML/Tailwind elements.
+
+For images: Use existing image URLs from the HTML when appropriate. If adding new images, use Picsum photos (https://picsum.photos/) with specific dimensions like:
+- https://picsum.photos/400/300 for general images
+- https://picsum.photos/800/400 for hero/banner images  
+- https://picsum.photos/150/150 for profile/avatar images
+- https://picsum.photos/300/200 for card images
+
+Return ONLY the complete updated HTML. No explanations, no code blocks, no other text.
 
 ---
 
-Website HTML:
+Current HTML:
 ${c.req.valid("json").html}
       `.trim(),
         },
@@ -85,35 +117,7 @@ ${c.req.valid("json").html}
         },
       ],
     });
-    console.log(analysis);
 
-    const { text: newHtml } = await generateText({
-      model: openrouter("x-ai/grok-code-fast-1"),
-      temperature: 0.1,
-      messages: [
-        {
-          role: "system",
-          content: `
-You are a coding assistant that makes changes to the HTML of a website based on the described changes.
-You receive the current state of the page and a description of what you should change. Return the full new html with changes.
-Only use assets and styles that already occur in the HTML or that are common to html and tailwind.
-If you need additional assets like images include them with links.
-
-Return the full html with the edits made.
-Do not include any other context or explanations. Do not wrap the code in tags or add any other characters. Only respond with the updated code.
-
----
-
-Current HTML:
-${c.req.valid("json").html}
-      `.trim(),
-        },
-        {
-          role: "user",
-          content: analysis,
-        },
-      ],
-    });
     return c.text(newHtml);
   }
 );
