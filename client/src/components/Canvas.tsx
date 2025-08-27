@@ -1,4 +1,5 @@
 import html2canvas from "html2canvas-pro";
+import { CheckIcon, EraserIcon, PencilIcon, XIcon } from "lucide-react";
 import getStroke from "perfect-freehand";
 import { useEffect, useState, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
@@ -75,11 +76,15 @@ export function Canvas(props: {
   }, [active]);
 
   const onAccept = async () => {
-    const canvas = await html2canvas(document.querySelector("#capture")!);
+    const canvas = await html2canvas(document.querySelector("#viewport")!);
     document.body.appendChild(canvas);
     const canvasDataURL = canvas.toDataURL("image/jpeg", 0.8);
-    console.log(canvasDataURL);
     document.body.removeChild(canvas);
+
+    const canvasPage = await html2canvas(document.querySelector("#page")!);
+    document.body.appendChild(canvasPage);
+    const canvasPageDataURL = canvasPage.toDataURL("image/jpeg", 0.8);
+    document.body.removeChild(canvasPage);
 
     const res = await fetch("/api/refactor", {
       method: "POST",
@@ -88,7 +93,8 @@ export function Canvas(props: {
       },
       body: JSON.stringify({
         html: props.currentHtml,
-        dataUrl: canvasDataURL,
+        drawoverUrl: canvasDataURL,
+        pageUrl: canvasPageDataURL,
       }),
     });
     const newHtml = await res.text();
@@ -102,9 +108,11 @@ export function Canvas(props: {
         <CanvasToolbar
           visible={active}
           isDrawing={isDrawing}
+          hasStrokes={strokes.length > 0 || currentPoints.length > 0}
           onClear={() => setStrokes([])}
           onDiscard={() => setActive(false)}
           onAccept={onAccept}
+          onEdit={() => setActive(true)}
         />,
         document.querySelector("#root")!
       )}
@@ -115,15 +123,15 @@ export function Canvas(props: {
         className={twMerge(
           "fixed z-10 top-0 cursor-crosshair left-0 w-full h-full transition-all duration-150 touch-none",
           active
-            ? "bg-black/15 pointer-events-auto opacity-100"
+            ? "bg-black/10 pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
         )}
       >
         {strokes.map((pathData, index) => (
-          <path key={index} d={pathData} fill="red" />
+          <path key={index} d={pathData} fill="#FF2A00" />
         ))}
         {isDrawing && currentPoints.length > 0 && (
-          <path d={currentPathData} fill="red" />
+          <path d={currentPathData} fill="#FF2A00" />
         )}
       </svg>
     </>
@@ -133,31 +141,71 @@ export function Canvas(props: {
 function CanvasToolbar(props: {
   visible: boolean;
   isDrawing: boolean;
+  hasStrokes: boolean;
+  onEdit: () => void;
   onClear: () => void;
   onDiscard: () => void;
   onAccept: () => void;
 }) {
   const mousePosition = useMousePosition();
   const isInLowerMiddle =
-    mousePosition && window.innerHeight - mousePosition[1] < 200;
+    mousePosition && window.innerHeight - mousePosition[1] < 300;
 
   return (
-    <div
-      className={twMerge(
-        "fixed bottom-4 transition-all left-1/2 -translate-x-1/2 z-20 bg-white",
-        // move in when visible
-        props.visible
-          ? "translate-y-0 scale-100 opacity-100"
-          : "translate-y-8 opacity-0 scale-50",
-        // move out of the way for the mouse
-        props.isDrawing &&
-          isInLowerMiddle &&
-          "pointer-events-none translate-y-8 opacity-50"
+    <>
+      {!props.hasStrokes && props.visible && (
+        <img
+          src="/edit.svg"
+          className={twMerge(
+            props.visible ? "opacity-100" : "opacity-0",
+            "fixed transition-all top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[80vw] max-w-[700px] pointer-events-none"
+          )}
+        />
       )}
-    >
-      <button onClick={props.onClear}>clear</button>
-      <button onClick={props.onAccept}>accept</button>
-      <button onClick={props.onDiscard}>discard</button>
-    </div>
+      <div
+        className={twMerge(
+          "fixed bottom-4 flex flex-row gap-4 transition-all left-1/2 -translate-x-1/2 z-20",
+          // move in when visible
+          props.visible
+            ? "translate-y-0 scale-100 opacity-100"
+            : "translate-y-8 opacity-0 scale-50",
+          // move out of the way for the mouse
+          ((props.isDrawing && isInLowerMiddle) ||
+            (props.visible && !props.hasStrokes)) &&
+            "pointer-events-none translate-y-8 scale-90 opacity-50 gap-2 [&_button]:nth-of-type-[1]:-rotate-[10deg] [&_button]:nth-of-type-[2]:rotate-[10deg]"
+        )}
+      >
+        <button
+          onClick={props.onClear}
+          className="bg-white rounded-sm size-16 md:size-10 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom"
+        >
+          <EraserIcon className="size-6 md:size-5" />
+        </button>
+        <button
+          onClick={props.onAccept}
+          disabled={!props.hasStrokes}
+          className="bg-white rounded-sm size-16 md:size-10 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom"
+        >
+          <CheckIcon className="size-6 md:size-5" />
+        </button>
+      </div>
+      {props.visible && (
+        <button
+          onClick={props.onDiscard}
+          className="fixed top-6 right-6 z-10 cursor-pointer"
+        >
+          <XIcon className="size-5" />
+        </button>
+      )}
+      <button
+        onClick={props.onEdit}
+        className={twMerge(
+          "fixed bottom-4 right-4 bg-white rounded-sm size-14 md:hidden flex items-center justify-center transition-all",
+          !props.visible ? "translate-y-0 scale-100" : "translate-y-20 scale-50"
+        )}
+      >
+        <PencilIcon className="size-5" />
+      </button>
+    </>
   );
 }

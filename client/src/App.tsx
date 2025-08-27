@@ -36,12 +36,14 @@ export function App() {
 
   return (
     <>
-      <div className="w-screen h-[100dvh] overflow-y-auto" id="capture">
+      <div className="w-screen h-[100dvh]" id="viewport">
         <Canvas
           currentHtml={currentState}
           setCurrentState={(newHtml) => setHistory([...history, newHtml])}
         />
-        <div dangerouslySetInnerHTML={{ __html: currentState }}></div>
+        <div id="page" className="w-full h-full overflow-y-auto">
+          <div dangerouslySetInnerHTML={{ __html: currentState }}></div>
+        </div>
         <DotGrid
           className="absolute top-0 left-0 w-full h-[100dvh] -z-10"
           colorBack="#F0EFEB"
