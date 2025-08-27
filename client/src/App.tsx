@@ -7,7 +7,8 @@ import page from "./content.html?raw";
 
 export function App() {
   const [history, setHistory] = useState<string[]>([page]);
-  const currentState = history[history.length - 1] || "";
+  const [newHtml, setNewHtml] = useState<null | string>(null);
+  const currentState = history.at(-1) || "";
 
   useLayoutEffect(() => {
     const editContainer = document.getElementById("edit-cta");
@@ -39,13 +40,28 @@ export function App() {
       <div className="w-screen h-[100dvh]" id="viewport">
         <Canvas
           currentHtml={currentState}
-          setCurrentState={(newHtml) => setHistory([...history, newHtml])}
+          setCurrentState={(newHtml) => {
+            setNewHtml(newHtml);
+            setTimeout(() => {
+              setHistory([...history, newHtml]);
+              setNewHtml(null);
+            }, 1000);
+          }}
         />
         <div
           id="page"
-          className="w-full h-full overflow-y-auto pb-[4.5rem] md:pb-0"
+          className="w-full h-full relative overflow-y-auto pb-[4.5rem] md:pb-0"
         >
-          <div dangerouslySetInnerHTML={{ __html: currentState }}></div>
+          {newHtml && (
+            <div
+              className="fade-in absolute top-0 left-0 z-10 w-full"
+              dangerouslySetInnerHTML={{ __html: newHtml }}
+            ></div>
+          )}
+          <div
+            className={newHtml ? "fade-out" : undefined}
+            dangerouslySetInnerHTML={{ __html: currentState }}
+          ></div>
         </div>
         <DotGrid
           className="absolute top-0 left-0 w-full h-[100dvh] -z-10"

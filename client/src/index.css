@@ -24,3 +24,22 @@ body {
 kbd {
     font-family: JetbrainsMono, monospace;
 }
+
+.fade-in {
+    opacity: 0;
+    animation: fade-in 1s forwards linear;
+}
+
+.fade-out {
+    opacity: 1;
+    animation: fade-in 1s forwards reverse linear;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
