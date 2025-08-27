@@ -193,11 +193,11 @@ function CanvasToolbar(props: {
         <button
           onClick={props.onDiscard}
           className={twMerge(
-            "fixed top-6 right-6 z-20 cursor-pointer",
+            "md:bg-transparent fixed top-4 rounded-sm right-4 z-20 cursor-pointer bg-white p-2",
             props.isDrawing && "pointer-events-none"
           )}
         >
-          <XIcon className="size-5" />
+          <XIcon className="md:size-5 size-7" />
         </button>
       )}
       <button
