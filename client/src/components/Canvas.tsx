@@ -302,7 +302,7 @@ function LoaderShader() {
     <PulsingBorder
       className={twMerge("fixed top-0 left-0 w-full pointer-events-none z-20")}
       style={{
-        height: `${height}px`,
+        height: height,
       }}
       colorBack="rgba(0, 0, 0, 0)"
       roundness={0}
