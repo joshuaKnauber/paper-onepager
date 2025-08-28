@@ -288,7 +288,7 @@ function CanvasToolbar(props: {
         >
           <Undo2Icon className="size-6 md:size-5 pointer-events-none" />
         </button>
-        <div className="flex flex-row px-1 items-center gap-1 bg-white rounded-4xl">
+        <div className="flex z-20 flex-row px-1 items-center gap-1 bg-white rounded-4xl">
           <button
             onClick={() => props.setTool("modify")}
             className={twMerge(
@@ -344,7 +344,12 @@ function CanvasToolbar(props: {
       >
         <Undo2Icon className="size-5" />
       </button>
-      <div className="flex flex-row items-center fixed z-20 bottom-6 left-1/2 -translate-x-1/2">
+      <div
+        className={twMerge(
+          "flex flex-row items-center fixed z-20 bottom-6 left-1/2 -translate-x-1/2 transition-all",
+          !props.visible ? "translate-y-0 scale-100" : "translate-y-20 scale-50"
+        )}
+      >
         <div
           className={twMerge(
             "overflow-hidden transition-all",
@@ -353,19 +358,14 @@ function CanvasToolbar(props: {
         >
           <button
             onClick={props.onUndoPage ?? undefined}
-            className="bg-white rounded-4xl flex items-center justify-center size-16 md:hidden"
+            className="bg-white shadow-lg rounded-4xl flex items-center justify-center size-16 md:hidden"
           >
             <Undo2Icon className="size-6" />
           </button>
         </div>
         <button
           onClick={props.onEdit}
-          className={twMerge(
-            "w-fit px-8 shadow-lg whitespace-nowrap bg-white rounded-4xl h-16 md:hidden flex items-center justify-center transition-all",
-            !props.visible
-              ? "translate-y-0 scale-100"
-              : "translate-y-20 scale-50"
-          )}
+          className="w-fit px-8 shadow-lg whitespace-nowrap bg-white rounded-4xl h-16 md:hidden flex items-center justify-center transition-all"
         >
           <span className="font-semibold">Edit the page</span>
         </button>
