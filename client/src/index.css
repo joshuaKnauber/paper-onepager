@@ -5,11 +5,6 @@
     src: url('./assets/fonts/Satoshi-Variable.woff2');
 }
 
-@font-face {
-    font-family: JetbrainsMono;
-    src: url('./assets/fonts/JetbrainsMono-Medium.ttf');
-}
-
 @theme {
     --color-container: #F0EFEB;
     --color-border: #CECBBF;
@@ -21,7 +16,8 @@ body {
 }
 
 kbd {
-    font-family: JetbrainsMono, monospace;
+    font-family: monospace;
+    font-weight: 600;
 }
 
 .fade-in {
