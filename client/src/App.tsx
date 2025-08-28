@@ -1,6 +1,6 @@
 import { ShaderMount, simplexNoiseFragmentShader } from "@paper-design/shaders";
 import { DotGrid } from "@paper-design/shaders-react";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Canvas } from "./components/Canvas";
 import page from "./content.html?raw";
@@ -10,7 +10,7 @@ export function App() {
   const [newHtml, setNewHtml] = useState<null | string>(null);
   const currentState = history.at(-1) || "";
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const editContainer = document.getElementById("edit-cta");
     if (!editContainer) return;
     const hasCanvas = editContainer.querySelector("canvas");
@@ -29,7 +29,7 @@ export function App() {
         u_offsetY: 0,
         u_worldWidth: 0,
         u_worldHeight: 0,
-        u_colors: [[1, 0.48, 0, 1.0]],
+        u_colors: [[0.496, 0.132, 0.992, 1.0]],
         u_colorsCount: 3,
         u_stepsPerColor: 3,
         u_softness: 4,
