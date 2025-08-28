@@ -37,7 +37,7 @@ export function App() {
       undefined,
       1.0
     );
-  }, []);
+  }, [history]);
 
   return (
     <>
@@ -54,7 +54,7 @@ export function App() {
         />
         <div
           id="page"
-          className="w-full h-full relative overflow-y-auto pb-[4.5rem] md:pb-0"
+          className="w-full h-full relative overflow-y-auto pb-[5.5rem] md:pb-0"
         >
           {newHtml && (
             <div

@@ -41,6 +41,8 @@ app.post(
   async (c) => {
     const { text: newHtml } = await generateText({
       model: openrouter("google/gemini-2.5-flash"),
+      // model: openrouter("anthropic/claude-3.7-sonnet"),
+      // model: openrouter("meta-llama/llama-4-maverick"),
       temperature: 0.1,
       messages: [
         {
@@ -48,43 +50,45 @@ app.post(
           content: `
 🎨 YOU ARE A DESIGN INTERPRETER - NOT A CODE REVIEWER
 
-FUNDAMENTAL RULE: Every single drawing is a DESIGN ELEMENT to be implemented in HTML. 
-- Drawings = Real website elements to add/modify
+FUNDAMENTAL RULE: Every single drawing is a DESIGN ELEMENT to be implemented in HTML based on its color:
+- GREEN drawings = Add/Edit/Update elements 
+- RED drawings = Delete/Remove elements
 - NOT annotations, NOT comments, NOT markup notes
-- NOT "suggestions" or "feedback" 
-- They are ACTUAL CONTENT for the final webpage
+- They are ACTUAL CONTENT changes for the final webpage
 
-The user sketched these elements because they want them on their website. Your job is to make their sketch into reality by adding the corresponding HTML elements.
+The user sketched these elements because they want specific changes on their website. Your job is to make their sketch into reality.
 
 WHAT YOU RECEIVE:
 1. Original website screenshot
-2. Same screenshot with RED DRAWINGS = new design elements to implement
+2. Same screenshot with COLORED DRAWINGS = design changes to implement
 3. Current HTML code
 
-YOUR MISSION: Transform every drawing into actual HTML elements and add them to the page.
+YOUR MISSION: Transform every drawing into actual HTML changes based on color.
 
-HOW TO INTERPRET DRAWINGS:
+HOW TO INTERPRET DRAWINGS BY COLOR:
 
-✅ SHAPES = NEW HTML ELEMENTS (Default assumption):
+🟢 GREEN = EDITS/ADDITIONS (Add new elements or modify existing):
 - Rectangle/square = <div> container, card, or section
 - Rectangle with scribbles = <button> with that text content
 - Square with X/cross = <img> tag (use Picsum photos)
 - Circle/oval = Profile image, avatar, icon
 - Lines = <hr> dividers, borders, separators
 - Scribbled text = <h1>, <h2>, <p> based on size
-
-✅ DRAWINGS ON EXISTING ELEMENTS = MODIFICATIONS:
 - Text over existing text = Change content
 - Arrows = Move elements to new positions
 - Boxes around elements = Add containers, styling
 
-❌ ONLY REMOVE IF EXPLICITLY CROSSED OUT:
-- Heavy strikethrough lines over existing content
-- Big X marks directly on top of existing elements
+🔴 RED = DELETIONS (Remove elements):
+- Lines through existing content = Delete that element
+- X marks over existing elements = Remove completely
+- Boxes around elements with red color = Delete entire section
+- Red scribbles over content = Remove that content
 
-CORE PRINCIPLE: When you see ANY drawing, ask "What HTML element does this represent?" not "Is this just a note?"
+CORE PRINCIPLE: 
+- GREEN = "Add this" or "Change this to..."
+- RED = "Remove this"
 
-PRESERVE + ENHANCE: Keep all existing content and ADD the drawn elements to create an enhanced version of the page.
+PRESERVE + ENHANCE: Keep all existing content EXCEPT what's marked in RED, and ADD/MODIFY based on GREEN drawings.
 
 Only use existing assets/styles from the HTML or common HTML/Tailwind elements.
 
