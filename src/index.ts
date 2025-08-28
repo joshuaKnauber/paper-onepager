@@ -8,7 +8,6 @@ import { requestId } from "hono/request-id";
 
 import { z } from "zod";
 
-import { groq } from "@ai-sdk/groq";
 import { generateText } from "ai";
 import * as path from "path";
 import { openrouter } from "./lib/ai-client";
@@ -139,7 +138,7 @@ Remember: Look at the original website screenshot and the same screenshot with c
       // Step 2: Make HTML edits based on the description
       console.time("HTML Generation");
       const { text: newHtml } = await generateText({
-        model: groq("openai/gpt-oss-120b"),
+        model: openrouter("x-ai/grok-code-fast-1"),
         temperature: 0.1,
         messages: [
           {
