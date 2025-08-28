@@ -4,12 +4,20 @@ export function useMousePosition() {
   const [position, setPosition] = useState<null | [number, number]>(null);
 
   useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => {
+    const onPointerMove = (e: MouseEvent) => {
       setPosition([e.clientX, e.clientY]);
     };
 
-    window.addEventListener("pointermove", onMouseMove);
-    return () => window.removeEventListener("pointermove", onMouseMove);
+    const onPointerUp = () => {
+      setPosition(null);
+    };
+
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+    };
   }, []);
 
   return position;
