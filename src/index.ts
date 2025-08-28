@@ -11,6 +11,7 @@ import { z } from "zod";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import { generateText } from "ai";
 import * as path from "path";
+import { scaleImage } from "./lib/images";
 
 const app = new Hono();
 
@@ -40,9 +41,11 @@ app.post(
   ),
   async (c) => {
     // Step 1: Interpret the images
+    console.time("Image Interpretation");
     const { text: changeDescription } = await generateText({
       model: openrouter("google/gemini-2.5-pro"),
       temperature: 0.3,
+      maxOutputTokens: 1000,
       messages: [
         {
           role: "system",
@@ -88,15 +91,17 @@ DO NOT mention drawing colors (green/red) in your output. Write 2-3 sentences wi
           content: [
             {
               type: "image",
-              image: c.req.valid("json").drawoverUrl,
+              image: await scaleImage(c.req.valid("json").drawoverUrl),
             },
           ],
         },
       ],
     });
+    console.timeEnd("Image Interpretation");
     console.log("Change description:", changeDescription);
 
     // Step 2: Make HTML edits based on the description
+    console.time("HTML Generation");
     const { text: newHtml } = await generateText({
       model: openrouter("x-ai/grok-code-fast-1"),
       temperature: 0.1,
@@ -120,6 +125,7 @@ ${c.req.valid("json").html}
         },
       ],
     });
+    console.timeEnd("HTML Generation");
 
     return c.text(newHtml);
   }
