@@ -1,6 +1,6 @@
 import { PulsingBorder } from "@paper-design/shaders-react";
 import html2canvas from "html2canvas-pro";
-import { CheckIcon, MinusIcon, PlusIcon, Undo2Icon, XIcon } from "lucide-react";
+import { CheckIcon, Undo2Icon, XIcon } from "lucide-react";
 import getStroke from "perfect-freehand";
 import { useEffect, useState, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
@@ -294,20 +294,20 @@ function CanvasToolbar(props: {
           <button
             onClick={() => props.setTool("modify")}
             className={twMerge(
-              "rounded-4xl shrink-0 hover:bg-black/10 size-14 md:size-10 active:scale-90 transition-transform duration-150 cursor-pointer flex items-center justify-center",
+              "rounded-4xl shrink-0 hover:bg-black/10 h-14 w-20 md:w-20 md:h-10 active:scale-90 transition-transform duration-150 cursor-pointer flex items-center justify-center",
               props.tool === "modify" && "bg-black/10"
             )}
           >
-            <PlusIcon className="size-6 md:size-5 pointer-events-none" />
+            <span className="font-semibold md:text-sm">Add</span>
           </button>
           <button
             onClick={() => props.setTool("erase")}
             className={twMerge(
-              "rounded-4xl shrink-0 hover:bg-black/10 size-14 md:size-10 active:scale-90 transition-transform duration-150 cursor-pointer flex items-center justify-center",
+              "rounded-4xl shrink-0 hover:bg-black/10 h-14 w-20 md:w-20 md:h-10 active:scale-90 transition-transform duration-150 cursor-pointer flex items-center justify-center",
               props.tool === "erase" && "bg-black/10"
             )}
           >
-            <MinusIcon className="size-6 md:size-5 pointer-events-none" />
+            <span className="font-semibold md:text-sm">Remove</span>
           </button>
         </div>
         <button
