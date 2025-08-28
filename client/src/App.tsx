@@ -39,6 +39,13 @@ export function App() {
     );
   }, [history]);
 
+  const canUndo = history.length > 1;
+
+  const onUndo = () => {
+    if (!canUndo) return;
+    setHistory((h) => h.slice(0, -1));
+  };
+
   return (
     <>
       <div className="w-screen h-[100dvh]" id="viewport">
@@ -51,6 +58,7 @@ export function App() {
               setNewHtml(null);
             }, 1000);
           }}
+          onUndoPage={canUndo ? onUndo : null}
         />
         <div
           id="page"

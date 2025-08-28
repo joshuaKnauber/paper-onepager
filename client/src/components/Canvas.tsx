@@ -39,6 +39,7 @@ async function postUpdate(
 export function Canvas(props: {
   currentHtml: string;
   setCurrentState: (value: string) => void;
+  onUndoPage: (() => void) | null;
 }) {
   const [active, setActive] = useState(false);
 
@@ -102,6 +103,7 @@ export function Canvas(props: {
         active={active}
         setActive={setActive}
         onAccept={onAccept}
+        onUndoPage={props.onUndoPage}
       />
       {(isMutating || isScreenshotting) && <LoaderShader />}
     </>
@@ -118,6 +120,7 @@ function DrawingSurface(props: {
   active: boolean;
   setActive: (value: boolean) => void;
   onAccept: () => Promise<void>;
+  onUndoPage: (() => void) | null;
 }) {
   const [strokes, setStrokes] = useState<{ stroke: string; tool: Tool }[]>([]);
   const [currentPoints, setCurrentPoints] = useState<
@@ -184,6 +187,7 @@ function DrawingSurface(props: {
             setCurrentPoints([]);
           }}
           onEdit={() => props.setActive(true)}
+          onUndoPage={props.onUndoPage}
         />,
         document.querySelector("#root")!
       )}
@@ -223,6 +227,7 @@ function CanvasToolbar(props: {
   onUndo: () => void;
   onDiscard: () => void;
   onAccept: () => void;
+  onUndoPage: (() => void) | null;
 }) {
   const [showHint, setShowHint] = useLocalStorage("show-draw-hint", true);
   const mousePosition = useMousePosition();
@@ -331,14 +336,40 @@ function CanvasToolbar(props: {
         </button>
       )}
       <button
-        onClick={props.onEdit}
+        onClick={props.onUndoPage ?? undefined}
         className={twMerge(
-          "fixed z-10 bottom-6 left-1/2 -translate-x-1/2 w-fit px-8 shadow-lg bg-white rounded-4xl h-16 md:hidden flex items-center justify-center transition-all",
-          !props.visible ? "translate-y-0 scale-100" : "translate-y-20 scale-50"
+          "bg-white rounded-4xl fixed bottom-6 right-6 md:flex items-center justify-center size-12 hidden z-10 cursor-pointer transition-all",
+          !props.onUndoPage && "translate-y-16 opacity-0 scale-75"
         )}
       >
-        <span className="font-semibold">Edit the page</span>
+        <Undo2Icon className="size-5" />
       </button>
+      <div className="flex flex-row items-center fixed z-20 bottom-6 left-1/2 -translate-x-1/2">
+        <div
+          className={twMerge(
+            "overflow-hidden transition-all",
+            props.onUndoPage ? "w-16 mr-2" : "w-0 mr-0"
+          )}
+        >
+          <button
+            onClick={props.onUndoPage ?? undefined}
+            className="bg-white rounded-4xl flex items-center justify-center size-16 md:hidden"
+          >
+            <Undo2Icon className="size-6" />
+          </button>
+        </div>
+        <button
+          onClick={props.onEdit}
+          className={twMerge(
+            "w-fit px-8 shadow-lg whitespace-nowrap bg-white rounded-4xl h-16 md:hidden flex items-center justify-center transition-all",
+            !props.visible
+              ? "translate-y-0 scale-100"
+              : "translate-y-20 scale-50"
+          )}
+        >
+          <span className="font-semibold">Edit the page</span>
+        </button>
+      </div>
     </>
   );
 }
