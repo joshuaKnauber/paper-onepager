@@ -155,6 +155,8 @@ Follow these steps:
 When adding images, use Picsum placeholder images (https://picsum.photos/WIDTH/HEIGHT) with appropriate dimensions for the context.
 For other media elements (videos, icons, etc.), use real working URLs from internet sources.
 
+IMPORTANT: All media elements (images, videos, etc.) must include explicit height and width styles in the style attribute.
+
 Return ONLY the complete updated HTML. No explanations, no code blocks, no other text.
 
 Current HTML:
