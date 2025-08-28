@@ -153,7 +153,8 @@ Follow these steps:
 3. PRESERVE: Keep all existing styling, classes, and structure unless specifically instructed to change
 4. VALIDATE: Ensure the HTML remains well-formed and functional
 
-When adding media elements (images, videos, icons, etc.), use real working URLs from internet sources.
+When adding images, use Picsum placeholder images (https://picsum.photos/WIDTH/HEIGHT) with appropriate dimensions for the context.
+For other media elements (videos, icons, etc.), use real working URLs from internet sources.
 
 Return ONLY the complete updated HTML. No explanations, no code blocks, no other text.
 
