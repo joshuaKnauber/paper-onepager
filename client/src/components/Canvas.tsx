@@ -81,6 +81,8 @@ export function Canvas(props: {
       const canvasPageDataURL = canvasPage.toDataURL("image/jpeg", 0.8);
       document.body.removeChild(canvasPage);
 
+      console.log(canvasDataURL);
+
       const newHtml = await updateUi({
         body: {
           html: props.currentHtml,

@@ -39,85 +39,84 @@ app.post(
     })
   ),
   async (c) => {
-    const { text: newHtml } = await generateText({
-      model: openrouter("google/gemini-2.5-flash"),
-      // model: openrouter("anthropic/claude-3.7-sonnet"),
-      // model: openrouter("meta-llama/llama-4-maverick"),
-      temperature: 0.1,
+    // Step 1: Interpret the images
+    const { text: changeDescription } = await generateText({
+      model: openrouter("google/gemini-2.5-pro"),
+      temperature: 0.3,
       messages: [
         {
           role: "system",
           content: `
-🎨 YOU ARE A DESIGN INTERPRETER - NOT A CODE REVIEWER
+You are a wireframe interpreter. Look at the original website screenshot and the same screenshot with colored drawings that represent specific changes to implement.
 
-FUNDAMENTAL RULE: Every single drawing is a DESIGN ELEMENT to be implemented in HTML based on its color:
-- GREEN drawings = Add/Edit/Update elements 
-- RED drawings = Delete/Remove elements
-- NOT annotations, NOT comments, NOT markup notes
-- They are ACTUAL CONTENT changes for the final webpage
+CRITICAL: The drawing colors (GREEN/RED) are ONLY for categorizing actions - DO NOT mention colors in your instructions. The elements you describe should use normal/default colors appropriate for the website.
 
-The user sketched these elements because they want specific changes on their website. Your job is to make their sketch into reality.
+ABSOLUTE COLOR RULES - NO EXCEPTIONS:
+- GREEN = ONLY ADD new elements OR MODIFY/EDIT existing ones - NEVER DELETE
+- RED = ONLY DELETE/REMOVE elements - NEVER ADD OR MODIFY
 
-WHAT YOU RECEIVE:
-1. Original website screenshot
-2. Same screenshot with COLORED DRAWINGS = design changes to implement
-3. Current HTML code
+GREEN ACTIONS ONLY:
+- ADD new containers, sections, buttons, images, text, etc.
+- MODIFY/EDIT existing content or elements
+- MOVE elements to new positions
 
-YOUR MISSION: Transform every drawing into actual HTML changes based on color.
+RED ACTIONS ONLY:
+- DELETE/REMOVE existing elements completely
 
-HOW TO INTERPRET DRAWINGS BY COLOR:
+SHAPE INTERPRETATION RULES - Pay close attention to these:
+- Rectangles/squares with X, cross, or scribbles inside = IMAGES/PHOTOS (very important to recognize)
+- Plain rectangles/squares = containers, sections, buttons, or cards
+- Squiggly/wavy lines = TEXT content (headings, paragraphs, labels)
+- Straight horizontal/vertical lines = dividers, borders, separators
+- Circles/ovals = profile images, avatars, icons, or rounded media
+- Triangular shapes = play buttons, video elements
+- Small squares/rectangles = form inputs, checkboxes
+- Arrows = move/reposition existing elements
 
-🟢 GREEN = EDITS/ADDITIONS (Add new elements or modify existing):
-- Rectangle/square = <div> container, card, or section
-- Rectangle with scribbles = <button> with that text content
-- Square with X/cross = <img> tag (use Picsum photos)
-- Circle/oval = Profile image, avatar, icon
-- Lines = <hr> dividers, borders, separators
-- Scribbled text = <h1>, <h2>, <p> based on size
-- Text over existing text = Change content
-- Arrows = Move elements to new positions
-- Boxes around elements = Add containers, styling
+When referencing existing elements on the page, USE THE ACTUAL TEXT CONTENT you can see (e.g., "below the 'Get Started' button", "next to the 'About Us' heading", "above the 'Contact' section", "to the right of the 'Welcome to our site' text").
 
-🔴 RED = DELETIONS (Remove elements):
-- Lines through existing content = Delete that element
-- X marks over existing elements = Remove completely
-- Boxes around elements with red color = Delete entire section
-- Red scribbles over content = Remove that content
+Be direct and specific about what should be changed. Include:
+1. POSITION relative to existing elements using visible text when possible
+2. SIZE when relevant (e.g., "large button", "small icon", "full-width image", "narrow sidebar")
+3. LAYOUT relationships (e.g., "in a horizontal row", "stacked vertically", "as a grid of 3 items")
 
-CORE PRINCIPLE: 
-- GREEN = "Add this" or "Change this to..."
-- RED = "Remove this"
-
-PRESERVE + ENHANCE: Keep all existing content EXCEPT what's marked in RED, and ADD/MODIFY based on GREEN drawings.
-
-Only use existing assets/styles from the HTML or common HTML/Tailwind elements.
-
-For images: Use existing image URLs from the HTML when appropriate. If adding new images, use Picsum photos (https://picsum.photos/) with specific dimensions like:
-- https://picsum.photos/400/300 for general images
-- https://picsum.photos/800/400 for hero/banner images  
-- https://picsum.photos/150/150 for profile/avatar images
-- https://picsum.photos/300/200 for card images
-
-Return ONLY the complete updated HTML. No explanations, no code blocks, no other text.
-
----
-
-Current HTML:
-${c.req.valid("json").html}
-      `.trim(),
+DO NOT mention drawing colors (green/red) in your output. Write 2-3 sentences with clear instructions that reference specific text content on the page when describing positions.
+          `.trim(),
         },
         {
           role: "user",
           content: [
             {
               type: "image",
-              image: c.req.valid("json").pageUrl,
-            },
-            {
-              type: "image",
               image: c.req.valid("json").drawoverUrl,
             },
           ],
+        },
+      ],
+    });
+    console.log("Change description:", changeDescription);
+
+    // Step 2: Make HTML edits based on the description
+    const { text: newHtml } = await generateText({
+      model: openrouter("x-ai/grok-code-fast-1"),
+      temperature: 0.1,
+      messages: [
+        {
+          role: "system",
+          content: `
+You are an HTML editor. You will receive a description of changes to make and the current HTML code.
+
+When adding media elements (images, videos, icons, etc.), use real working URLs from internet sources that would actually load in a browser.
+
+Make the requested changes and return ONLY the complete updated HTML. No explanations, no code blocks, no other text.
+
+Current HTML:
+${c.req.valid("json").html}
+          `.trim(),
+        },
+        {
+          role: "user",
+          content: changeDescription,
         },
       ],
     });
