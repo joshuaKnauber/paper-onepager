@@ -1,12 +1,6 @@
 import { PulsingBorder } from "@paper-design/shaders-react";
 import html2canvas from "html2canvas-pro";
-import {
-  CheckIcon,
-  EraserIcon,
-  PencilIcon,
-  Trash2Icon,
-  XIcon,
-} from "lucide-react";
+import { CheckIcon, MinusIcon, PlusIcon, Undo2Icon, XIcon } from "lucide-react";
 import getStroke from "perfect-freehand";
 import { useEffect, useState, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
@@ -178,8 +172,11 @@ function DrawingSurface(props: {
           hasStrokes={strokes.length > 0 || currentPoints.length > 0}
           tool={tool}
           setTool={setTool}
-          onClear={() => setStrokes([])}
-          onDiscard={() => props.setActive(false)}
+          onUndo={() => setStrokes((c) => c.slice(0, -1))}
+          onDiscard={() => {
+            props.setActive(false);
+            setStrokes([]);
+          }}
           onAccept={async () => {
             if (strokes.length === 0) return;
             await props.onAccept();
@@ -223,14 +220,24 @@ function CanvasToolbar(props: {
   tool: Tool;
   setTool: (tool: Tool) => void;
   onEdit: () => void;
-  onClear: () => void;
+  onUndo: () => void;
   onDiscard: () => void;
   onAccept: () => void;
 }) {
   const [showHint, setShowHint] = useLocalStorage("show-draw-hint", true);
   const mousePosition = useMousePosition();
-  const isInLowerMiddle =
-    mousePosition && mousePosition[1] / window.innerHeight > 0.6;
+
+  const [isLowered, setIsLowered] = useState(false);
+
+  useEffect(() => {
+    const isInLowerMiddle =
+      mousePosition && mousePosition[1] / window.innerHeight > 0.6;
+    if (props.isDrawing && !isLowered && isInLowerMiddle) {
+      setIsLowered(true);
+    } else if (!props.isDrawing && isLowered) {
+      setIsLowered(false);
+    }
+  }, [props.isDrawing, mousePosition, isLowered]);
 
   return (
     <>
@@ -261,12 +268,12 @@ function CanvasToolbar(props: {
             : "translate-y-8 opacity-0 scale-50",
           // move out of the way for the mouse
           props.isDrawing &&
-            isInLowerMiddle &&
+            isLowered &&
             "pointer-events-none translate-y-12 md:opacity-50 scale-75"
         )}
       >
         <button
-          onClick={props.onClear}
+          onClick={props.onUndo}
           className={twMerge(
             "bg-white rounded-4xl size-16 md:size-12 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom",
             !props.hasStrokes &&
@@ -274,7 +281,7 @@ function CanvasToolbar(props: {
               "translate-y-8 translate-x-4 scale-90 opacity-50 -rotate-12"
           )}
         >
-          <Trash2Icon className="size-6 md:size-5 pointer-events-none" />
+          <Undo2Icon className="size-6 md:size-5 pointer-events-none" />
         </button>
         <div className="flex flex-row px-1 items-center gap-1 bg-white rounded-4xl">
           <button
@@ -284,7 +291,7 @@ function CanvasToolbar(props: {
               props.tool === "modify" && "bg-black/10"
             )}
           >
-            <PencilIcon className="size-6 md:size-5 pointer-events-none" />
+            <PlusIcon className="size-6 md:size-5 pointer-events-none" />
           </button>
           <button
             onClick={() => props.setTool("erase")}
@@ -293,7 +300,7 @@ function CanvasToolbar(props: {
               props.tool === "erase" && "bg-black/10"
             )}
           >
-            <EraserIcon className="size-6 md:size-5 pointer-events-none" />
+            <MinusIcon className="size-6 md:size-5 pointer-events-none" />
           </button>
         </div>
         <button
@@ -303,7 +310,7 @@ function CanvasToolbar(props: {
           }}
           disabled={!props.hasStrokes}
           className={twMerge(
-            "bg-white rounded-4xl size-16 md:h-12 md:w-20 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom",
+            "bg-white rounded-4xl size-16 md:size-12 active:scale-90 cursor-pointer flex items-center justify-center transition-all duration-150 origin-bottom",
             !props.hasStrokes &&
               props.visible &&
               "translate-y-8 -translate-x-4 scale-90 opacity-50 rotate-12"
