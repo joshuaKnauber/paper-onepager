@@ -8,7 +8,7 @@ import { requestId } from "hono/request-id";
 
 import { z } from "zod";
 
-import { openrouter } from "@openrouter/ai-sdk-provider";
+import { groq } from "@ai-sdk/groq";
 import { generateText } from "ai";
 import * as path from "path";
 import { scaleImage } from "./lib/images";
@@ -43,9 +43,8 @@ app.post(
     // Step 1: Interpret the images
     console.time("Image Interpretation");
     const { text: changeDescription } = await generateText({
-      model: openrouter("google/gemini-2.5-pro"),
+      model: groq("meta-llama/llama-4-maverick-17b-128e-instruct"),
       temperature: 0.3,
-      maxOutputTokens: 1000,
       messages: [
         {
           role: "system",
@@ -103,7 +102,7 @@ DO NOT mention drawing colors (green/red) in your output. Write 2-3 sentences wi
     // Step 2: Make HTML edits based on the description
     console.time("HTML Generation");
     const { text: newHtml } = await generateText({
-      model: openrouter("x-ai/grok-code-fast-1"),
+      model: groq("openai/gpt-oss-120b"),
       temperature: 0.1,
       messages: [
         {
