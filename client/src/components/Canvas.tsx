@@ -103,30 +103,7 @@ export function Canvas(props: {
         setActive={setActive}
         onAccept={onAccept}
       />
-      {(isMutating || isScreenshotting) && (
-        <PulsingBorder
-          className={twMerge(
-            "fixed left-0 w-full top-0 bottom-0 pointer-events-none z-20"
-          )}
-          colorBack="rgba(0, 0, 0, 0)"
-          roundness={0}
-          thickness={0.1}
-          softness={3}
-          intensity={0.4}
-          bloom={0.5}
-          spots={3}
-          spotSize={0.4}
-          pulse={0.2}
-          smoke={0.15}
-          smokeSize={1}
-          scale={0.99}
-          rotation={0}
-          offsetX={0}
-          offsetY={0}
-          speed={1}
-          colors={["#d62828", "#f77f00", "#fcbf49", "#eae2b7"]}
-        />
-      )}
+      {(isMutating || isScreenshotting || true) && <LoaderShader />}
     </>
   );
 }
@@ -305,5 +282,45 @@ function CanvasToolbar(props: {
         <span className="font-semibold">Edit the page</span>
       </button>
     </>
+  );
+}
+
+function LoaderShader() {
+  const [height, setHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const onResize = () => {
+      setHeight(window.innerHeight);
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  return (
+    <PulsingBorder
+      className={twMerge("fixed top-0 left-0 w-full pointer-events-none z-20")}
+      style={{
+        height: `${height}px`,
+      }}
+      colorBack="rgba(0, 0, 0, 0)"
+      roundness={0}
+      thickness={0.05}
+      softness={0.75}
+      intensity={0.1}
+      bloom={0.35}
+      spots={3}
+      spotSize={0.3}
+      pulse={0.1}
+      smoke={0.45}
+      smokeSize={0.6}
+      scale={1}
+      rotation={0}
+      offsetX={0}
+      offsetY={0}
+      speed={1}
+      colors={["hsl(200, 98%, 52%)", "hsl(290, 87%, 51%)", "hsl(5, 100%, 59%)"]}
+    />
   );
 }
